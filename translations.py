@@ -1096,4 +1096,63 @@ T = {
         "ja": "**採取型真の価値：** $V_{{ext}} = S - C_{{ext}}$",
         "zh": "**攫取型真实价值：** $V_{{ext}} = S - C_{{ext}}$",
     },
+    # ── Legend prefix ──
+    "cum_prefix": {
+        "en": "Cum.", "de": "Kum.", "it": "Cum.",
+        "fr": "Cum.", "es": "Acum.", "ja": "累積", "zh": "累计",
+    },
+    # ── Chart hover/annotation labels ──
+    "hover_all_ext_costs": {
+        "en": "All Ext. Costs", "de": "ALLE Ext.-Kosten", "it": "Tutti i Costi Est.",
+        "fr": "Tous Coûts Ext.", "es": "Todos Costes Ext.", "ja": "全外部費用", "zh": "所有外部成本",
+    },
+    "hover_cum_debt": {
+        "en": "Cum. Debt", "de": "Kum. Schuld", "it": "Debito Cum.",
+        "fr": "Dette Cum.", "es": "Deuda Acum.", "ja": "累積負債", "zh": "累计债务",
+    },
+    "hover_cum_flynn": {
+        "en": "Cum. Flynn", "de": "Kum. Flynn", "it": "Cum. Flynn",
+        "fr": "Cum. Flynn", "es": "Acum. Flynn", "ja": "累積Flynn", "zh": "累计Flynn",
+    },
+    "ann_true_value": {
+        "en": "true value", "de": "wahrer Wert", "it": "valore reale",
+        "fr": "valeur réelle", "es": "valor real", "ja": "真の価値", "zh": "真实价值",
+    },
+    "ann_gap_annual": {
+        "en": "Gap (annual)", "de": "Schere (jährl.)", "it": "Divario (annuale)",
+        "fr": "Écart (annuel)", "es": "Brecha (anual)", "ja": "ギャップ（年間）", "zh": "差距（年度）",
+    },
+    "ann_bn": {
+        "en": "bn", "de": "Mrd.", "it": "mld", "fr": "mrd", "es": "mm", "ja": "十億", "zh": "十亿",
+    },
+    # ── Projection result metrics ──
+    "result_heading": {
+        "en": "Result {start} – {end} — System Comparison",
+        "de": "Ergebnis {start} – {end} — Systemvergleich",
+        "it": "Risultato {start} – {end} — Confronto di Sistema",
+        "fr": "Résultat {start} – {end} — Comparaison Systémique",
+        "es": "Resultado {start} – {end} — Comparación Sistémica",
+        "ja": "結果 {start} – {end} — システム比較",
+        "zh": "结果 {start} – {end} — 系统比较",
+    },
+    "metric_ext_true": {
+        "en": "Extractive (true value)", "de": "Extraktiv (wahrer Wert)",
+        "it": "Estrattivo (valore reale)", "fr": "Extractif (valeur réelle)",
+        "es": "Extractivo (valor real)", "ja": "採取型（真の価値）", "zh": "攫取型（真实价值）",
+    },
+    "metric_flynn_advantage": {
+        "en": "Flynn Advantage (vs. Gross)", "de": "Flynn-Vorteil (vs. Brutto)",
+        "it": "Vantaggio Flynn (vs. Lordo)", "fr": "Avantage Flynn (vs. Brut)",
+        "es": "Ventaja Flynn (vs. Bruto)", "ja": "Flynnアドバンテージ（vs. 総額）", "zh": "Flynn优势（vs. 总额）",
+    },
+    "metric_cum_ext": {
+        "en": "Cum. Externalities", "de": "Kum. Externalitaeten",
+        "it": "Esternalità Cum.", "fr": "Externalités Cum.",
+        "es": "Externalidades Acum.", "ja": "累積外部性", "zh": "累计外部性",
+    },
+    "metric_never_repaid": {
+        "en": "Never repaid!", "de": "Nie abgebaut!",
+        "it": "Mai ripagato!", "fr": "Jamais remboursé !",
+        "es": "¡Nunca reembolsado!", "ja": "返済されない！", "zh": "从未偿还！",
+    },
 }

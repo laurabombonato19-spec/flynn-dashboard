@@ -188,6 +188,21 @@ EXT_CATEGORIES = {
     "Regulat. Erfassung":     {"rate": 0.03, "index": "iri", "color": "#d4a017", "icon": "\U0001F3DB"},
 }
 EXT_CAT_NAMES = list(EXT_CATEGORIES.keys())
+
+# Mapping: internal German key → translation key (for chart legends)
+CAT_TRANSLATE = {
+    "Klima & CO2":            "math_cat_climate",
+    "Biodiversitaetsverlust": "math_cat_biodiv",
+    "Wasser & Boden":         "math_cat_water",
+    "Gesundheitsschaeden":    "math_cat_health",
+    "Soziale Ungleichheit":   "math_cat_inequality",
+    "Arbeitnehmerausbeutung": "math_cat_exploitation",
+    "Systemisches Risiko":    "math_cat_systemic",
+    "Regulat. Erfassung":     "math_cat_regulatory",
+}
+def _tcat(key: str) -> str:
+    """Translate an internal category key to the current language."""
+    return t(CAT_TRANSLATE.get(key, "")) if key in CAT_TRANSLATE else key
 # Total max rate at full degradation (all indices=0): sum of all rates = 0.50 of Revenue
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -706,7 +721,7 @@ def chart_value_comparison(df: pd.DataFrame) -> go.Figure:
         name=t("extractive_ext"), mode="lines+markers",
         line=dict(color="#ff8c42", width=3.5, dash="dot"),
         marker=dict(size=5, color="#ff8c42"),
-        hovertemplate="%{x}: $%{y:,.0f}<extra>ALLE Ext.-Kosten</extra>",
+        hovertemplate="%{x}: $%{y:,.0f}<extra>" + t('hover_all_ext_costs') + "</extra>",
     ))
     # Individual category lines (thin, stacked visibility)
     for cat_name, cat_cfg in EXT_CATEGORIES.items():
@@ -714,9 +729,9 @@ def chart_value_comparison(df: pd.DataFrame) -> go.Figure:
         if col in plot_df.columns:
             fig.add_trace(go.Scatter(
                 x=plot_df["Jahr"], y=plot_df[col],
-                name=cat_name, mode="lines",
+                name=_tcat(cat_name), mode="lines",
                 line=dict(color=cat_cfg["color"], width=1, dash="dash"),
-                hovertemplate="%{x}: $%{y:,.0f}<extra>" + cat_name + "</extra>",
+                hovertemplate="%{x}: $%{y:,.0f}<extra>" + _tcat(cat_name) + "</extra>",
                 visible="legendonly",  # toggle-able — default hidden to avoid clutter
             ))
     # Flynn
@@ -734,14 +749,14 @@ def chart_value_comparison(df: pd.DataFrame) -> go.Figure:
         name=t("cum_destruction_trace") + " (1996+)", mode="lines",
         line=dict(color="#ff6b6b", width=2, dash="dashdot"),
         fill="tozeroy", fillcolor="rgba(255,77,106,0.06)",
-        hovertemplate="%{x}: $%{y:,.0f}<extra>Kum. Schuld</extra>",
+        hovertemplate="%{x}: $%{y:,.0f}<extra>" + t('hover_cum_debt') + "</extra>",
     ))
     # ── Cumulative Flynn value creation ──
     fig.add_trace(go.Scatter(
         x=plot_df["Jahr"], y=plot_df["Flynn Kum. Wertschoepfung"],
         name=t("cum_flynn_trace"), mode="lines",
         line=dict(color="#2ecc71", width=2, dash="dashdot"),
-        hovertemplate="%{x}: $%{y:,.0f}<extra>Kum. Flynn</extra>",
+        hovertemplate="%{x}: $%{y:,.0f}<extra>" + t('hover_cum_flynn') + "</extra>",
     ))
 
     # Final year annotations
@@ -759,7 +774,7 @@ def chart_value_comparison(df: pd.DataFrame) -> go.Figure:
         ext_eff = ((_sf(final["Ext. True Value"]) / max(_sf(final["Ext. Marktwert"]), 1)) - 1) * 100
         fig.add_annotation(
             x=yr, y=_sf(final["Ext. True Value"]),
-            text=f'{ext_eff:,.0f}% wahrer Wert', showarrow=True,
+            text=f'{ext_eff:,.0f}% {t("ann_true_value")}', showarrow=True,
             arrowhead=2, arrowcolor=COLORS["extractive"], ax=45, ay=30,
             font=dict(size=14, color=COLORS["extractive"]),
             bgcolor="rgba(40,0,0,0.85)", bordercolor=COLORS["extractive"],
@@ -769,7 +784,7 @@ def chart_value_comparison(df: pd.DataFrame) -> go.Figure:
         mid_y = (_sf(final["Flynn Matrix Value"]) + _sf(final["Ext. True Value"])) / 2
         fig.add_annotation(
             x=yr - 1.5, y=mid_y,
-            text=f'Schere (jährl.): {gap/1e9:,.1f} Mrd.', showarrow=False,
+            text=f'{t("ann_gap_annual")}: {gap/1e9:,.1f} {t("ann_bn")}', showarrow=False,
             font=dict(size=14, color="#fbbf24"),
             bgcolor="rgba(20,10,0,0.85)", bordercolor="#fbbf24", borderwidth=2,
         )
@@ -777,7 +792,7 @@ def chart_value_comparison(df: pd.DataFrame) -> go.Figure:
         cum_debt = _sf(final["Ext. Kum. Wertvernichtung"])
         fig.add_annotation(
             x=yr, y=cum_debt,
-            text=f'Kum. Schuld: {cum_debt/1e9:,.0f} Mrd.', showarrow=True,
+            text=f'{t("hover_cum_debt")}: {cum_debt/1e9:,.0f} {t("ann_bn")}', showarrow=True,
             arrowhead=2, arrowcolor="#ff6b6b", ax=-60, ay=40,
             font=dict(size=13, color="#ff6b6b"),
             bgcolor="rgba(40,0,0,0.85)", bordercolor="#ff6b6b", borderwidth=2,
@@ -844,10 +859,10 @@ def chart_cumulative_destruction(df: pd.DataFrame) -> go.Figure:
             cat_cfg = EXT_CATEGORIES[cat_name]
             fig.add_trace(go.Scatter(
                 x=all_data["Jahr"], y=cum_cat,
-                name=f"Kum. {cat_name}",
+                name=f"{t('cum_prefix')} {_tcat(cat_name)}",
                 mode="lines", line=dict(color=cat_cfg["color"], width=0.5),
                 stackgroup="ext_cats",
-                hovertemplate="%{x}: %{y:$,.0f}<extra>" + cat_name + "</extra>",
+                hovertemplate="%{x}: %{y:$,.0f}<extra>" + _tcat(cat_name) + "</extra>",
             ))
 
     # ── Total cumulative destruction line (bold on top) ──
@@ -975,9 +990,9 @@ def chart_annual_comparison(df: pd.DataFrame) -> go.Figure:
             fig.add_trace(go.Bar(
                 x=all_data["Jahr"],
                 y=[-v for v in all_data[col]],
-                name=cat_name,
+                name=_tcat(cat_name),
                 marker_color=cat_cfg["color"], opacity=0.85,
-                hovertemplate="%{x}: %{y:$,.0f}<extra>" + cat_name + "</extra>",
+                hovertemplate="%{x}: %{y:$,.0f}<extra>" + _tcat(cat_name) + "</extra>",
             ))
 
     # Positive: Flynn generated value (MW + MQ uplift) — only in projection!
@@ -1474,15 +1489,15 @@ def main():
 
     # ── Projection Results ──
     st.markdown("---")
-    st.markdown(f"### Ergebnis {current_year + 1} – {int(final['Jahr'])} — Systemvergleich")
+    st.markdown(f"### {t('result_heading', start=current_year + 1, end=int(final['Jahr']))}")
     c1, c2, c3, c4, c5 = st.columns(5)
-    c1.metric("Extraktiv (wahrer Wert)", fmt_usd(final["Ext. True Value"]))
+    c1.metric(t("metric_ext_true"), fmt_usd(final["Ext. True Value"]))
     c2.metric("Flynn Matrix Value", fmt_usd(final["Flynn Matrix Value"]))
-    c3.metric("Flynn-Vorteil (vs. Brutto)", f'+{final["Delta (%)"]:,.0f}%', fmt_usd(final["Delta (abs)"]))
+    c3.metric(t("metric_flynn_advantage"), f'+{final["Delta (%)"]:,.0f}%', fmt_usd(final["Delta (abs)"]))
     c4.metric("EHI: Ext. vs Flynn",
               f'{final["Ext. EHI"]:.2f} vs {final["Flynn EHI"]:.2f}')
-    c5.metric("Kum. Externalitaeten", fmt_usd(cum_ext),
-              "Nie abgebaut!", delta_color="inverse")
+    c5.metric(t("metric_cum_ext"), fmt_usd(cum_ext),
+              t("metric_never_repaid"), delta_color="inverse")
 
     # ── TABS ──
     st.markdown("---")
@@ -1506,7 +1521,7 @@ def main():
                           "Ext. Externalities": t("col_sum"),
                           "Ext. Kum. Externalities": t("col_cumulated")}
             for cn in EXT_CAT_NAMES:
-                nice_names[f"Ext. {cn}"] = f"{EXT_CATEGORIES[cn]['icon']} {cn}"
+                nice_names[f"Ext. {cn}"] = f"{EXT_CATEGORIES[cn]['icon']} {_tcat(cn)}"
             breakdown.rename(columns=nice_names, inplace=True)
             for c in breakdown.columns:
                 if c not in (t("col_year"), t("col_phase")):

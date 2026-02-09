@@ -1497,31 +1497,31 @@ def main():
         st.plotly_chart(chart_cumulative_destruction(df), width="stretch")
         st.caption(t("cap_cum_destruction", yr=hist_years[0]))
         # ── Per-category breakdown table (ALL years: historical + projection) ──
-        st.markdown(f"##### {t('all_categories_title', start=retro_start)}")
-        cat_cols = ["Jahr", "Phase", "Revenue"] + [f"Ext. {c}" for c in EXT_CAT_NAMES] + [
-            "Ext. Externalities", "Ext. Kum. Externalities"]
-        cat_cols_avail = [c for c in cat_cols if c in df.columns]
-        breakdown = df[cat_cols_avail].copy()
-        nice_names = {"Jahr": "Jahr", "Phase": "Phase", "Revenue": "Revenue",
-                      "Ext. Externalities": "SUMME",
-                      "Ext. Kum. Externalities": "Kumuliert"}
-        for cn in EXT_CAT_NAMES:
-            nice_names[f"Ext. {cn}"] = f"{EXT_CATEGORIES[cn]['icon']} {cn}"
-        breakdown.rename(columns=nice_names, inplace=True)
-        for c in breakdown.columns:
-            if c not in ("Jahr", "Phase"):
-                breakdown[c] = breakdown[c].apply(lambda v: f"${_sf(v)/1e9:,.2f}B")
-        st.dataframe(breakdown, width="stretch", hide_index=True)
+        with st.expander(t('all_categories_title', start=retro_start), expanded=False):
+            cat_cols = ["Jahr", "Phase", "Revenue"] + [f"Ext. {c}" for c in EXT_CAT_NAMES] + [
+                "Ext. Externalities", "Ext. Kum. Externalities"]
+            cat_cols_avail = [c for c in cat_cols if c in df.columns]
+            breakdown = df[cat_cols_avail].copy()
+            nice_names = {"Jahr": "Jahr", "Phase": "Phase", "Revenue": "Revenue",
+                          "Ext. Externalities": "SUMME",
+                          "Ext. Kum. Externalities": "Kumuliert"}
+            for cn in EXT_CAT_NAMES:
+                nice_names[f"Ext. {cn}"] = f"{EXT_CATEGORIES[cn]['icon']} {cn}"
+            breakdown.rename(columns=nice_names, inplace=True)
+            for c in breakdown.columns:
+                if c not in ("Jahr", "Phase"):
+                    breakdown[c] = breakdown[c].apply(lambda v: f"${_sf(v)/1e9:,.2f}B")
+            st.dataframe(breakdown, width="stretch", hide_index=True)
 
-        st.markdown(f"##### {t('cum_gap_title', start=retro_start)}")
-        schere_df = df[["Jahr", "Phase", "Ext. Kum. Externalities",
-                          "Flynn Kum. Wertschoepfung", "Kum. Schere (abs)"]].copy()
-        schere_df.columns = ["Jahr", "Phase", "Kum. Schuld (Extraktiv)",
-                             "Kum. Aufbau (Flynn)", "Schere"]
-        for c in schere_df.columns:
-            if c not in ("Jahr", "Phase"):
-                schere_df[c] = schere_df[c].apply(lambda v: f"${_sf(v)/1e9:,.2f}B")
-        st.dataframe(schere_df, width="stretch", hide_index=True)
+        with st.expander(t('cum_gap_title', start=retro_start), expanded=False):
+            schere_df = df[["Jahr", "Phase", "Ext. Kum. Externalities",
+                              "Flynn Kum. Wertschoepfung", "Kum. Schere (abs)"]].copy()
+            schere_df.columns = ["Jahr", "Phase", "Kum. Schuld (Extraktiv)",
+                                 "Kum. Aufbau (Flynn)", "Schere"]
+            for c in schere_df.columns:
+                if c not in ("Jahr", "Phase"):
+                    schere_df[c] = schere_df[c].apply(lambda v: f"${_sf(v)/1e9:,.2f}B")
+            st.dataframe(schere_df, width="stretch", hide_index=True)
 
     with tab1:
         st.plotly_chart(chart_annual_comparison(df), width="stretch")
@@ -1561,10 +1561,10 @@ def main():
         st.caption(t("cap_metamorphose"))
 
     with tab8:
-        st.markdown(f"#### {t('data_table_title')}")
-        st.dataframe(df, width="stretch", height=500)
-        csv = df.to_csv(index=False).encode("utf-8")
-        st.download_button(t("csv_export"), csv, "flynn_matrix_full.csv", "text/csv")
+        with st.expander(t('data_table_title'), expanded=False):
+            st.dataframe(df, width="stretch", height=500)
+            csv = df.to_csv(index=False).encode("utf-8")
+            st.download_button(t("csv_export"), csv, "flynn_matrix_full.csv", "text/csv")
 
     # ── Mathematical Reference ──
     st.markdown("---")

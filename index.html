@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flynn 50/50 Matrix Dashboard – Societal Business</title>
+  <meta name="description" content="Flynn 50/50 Matrix: Comparing extractive capitalism vs. regenerative economy for the world's largest asset managers.">
+  <link rel="canonical" href="https://societal.business/flynn-dashboard/">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { height: 100%; width: 100%; overflow: hidden; background: #0a0e17; font-family: 'Segoe UI', system-ui, sans-serif; }
+
+    /* Tiny branded header bar */
+    .topbar {
+      height: 42px;
+      background: linear-gradient(135deg, #0a0e17, #101829);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      border-bottom: 1px solid #1a2540;
+    }
+    .topbar .brand {
+      color: #00e5a0;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-decoration: none;
+    }
+    .topbar .brand:hover { color: #33ffbb; }
+    .topbar .links a {
+      color: #6b7d9a;
+      font-size: 12px;
+      text-decoration: none;
+      margin-left: 18px;
+      transition: color 0.2s;
+    }
+    .topbar .links a:hover { color: #c9d6e3; }
+
+    /* Fixed bottom overlay bar (covers Streamlit's white footer/gap) */
+    .bottombar {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 45px; /* covers the white strip */
+      background: linear-gradient(135deg, #0a0e17, #101829);
+      border-top: 1px solid #1a2540;
+      z-index: 9999;
+      pointer-events: none; /* non-interactive overlay */
+    }
+
+    /* Full-screen iframe — overflow hides Streamlit's white border */
+    .frame-wrap {
+      width: 100%;
+      height: calc(100% - 42px);
+      overflow: hidden;
+      position: relative;
+      background: #0a0e17;
+    }
+    .frame-wrap iframe {
+      position: absolute;
+      top: -4px;
+      left: -4px;
+      width: calc(100% + 10px);
+      height: calc(100% + 10px);
+      border: none;
+      outline: none;
+      color-scheme: dark;
+      background: #0a0e17;
+      border-radius: 0;
+    }
+
+    /* Loading state while iframe loads */
+    .loading {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      color: #6b7d9a;
+      font-size: 16px;
+      z-index: 1;
+    }
+    .loading .spinner {
+      width: 36px; height: 36px;
+      border: 3px solid #1a2540;
+      border-top-color: #00e5a0;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 12px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+
+  <div class="topbar">
+    <a class="brand" href="https://societal.business">⟁ Societal Business</a>
+    <div class="links">
+      <a href="https://societal.business">Home</a>
+      <a href="https://societal.business/whitepaper_flynn.html">Whitepaper</a>
+    </div>
+  </div>
+
+  <div class="loading" id="loader">
+    <div class="spinner"></div>
+    Loading Flynn 50/50 Matrix Dashboard …
+  </div>
+
+  <div class="frame-wrap">
+    <!--
+      ╔══════════════════════════════════════════════════════════════╗
+      ║  WICHTIG: Ersetze die URL unten durch deine Streamlit-URL  ║
+      ║  z.B. https://flynn-dashboard.streamlit.app                ║
+      ╚══════════════════════════════════════════════════════════════╝
+    -->
+    <iframe
+      id="dashboard"
+      src="https://flynn-dashboard-kuu4wdp5o9nrtzv5hgvmkw.streamlit.app/?embed=true&embed_options=dark_theme&embed_options=hide_footer&embed_options=hide_colored_line"
+      allow="clipboard-write"
+      loading="eager"
+      onload="document.getElementById('loader').style.display='none';"
+    ></iframe>
+  </div>
+
+  <!-- Bottom overlay to hide embedded white footer/gap -->
+  <div class="bottombar" aria-hidden="true"></div>
+
+    <script src="https://societal.business/assets/js/sb-lookup.js"></script>
+    <script src="https://societal.business/assets/js/copilot_global500.js"></script>
+    <script src="https://societal.business/assets/js/societal_menu.js"></script>
+</body>
+</html>

@@ -48,6 +48,16 @@
       border-top: 1px solid #1a2540;
       z-index: 9999;
       pointer-events: none; /* non-interactive overlay */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .bottombar .copyright {
+      pointer-events: auto; /* allow text selection */
+      color: #9fb6d6;
+      font-size: 0.88rem;
+      line-height: 1;
+      text-align: center;
     }
 
     /* Full-screen iframe — overflow hides Streamlit's white border */
@@ -94,7 +104,7 @@
 <body>
 
   <div class="topbar">
-    <a class="brand" href="https://societal.business">⟁ Societal Business</a>
+    <a class="brand" href="https://societal.business">Societal Business Think Tank</a>
     <div class="links">
       <a href="https://societal.business">Home</a>
       <a href="https://societal.business/whitepaper_flynn.html">Whitepaper</a>
@@ -123,7 +133,9 @@
   </div>
 
   <!-- Bottom overlay to hide embedded white footer/gap -->
-  <div class="bottombar" aria-hidden="true"></div>
+  <div class="bottombar" aria-hidden="false" role="contentinfo">
+    <div class="copyright">© Dr Judith Annabella Voll. All rights reserved.</div>
+  </div>
 
     <script src="https://societal.business/assets/js/sb-lookup.js"></script>
     <script src="https://societal.business/assets/js/copilot_global500.js"></script>

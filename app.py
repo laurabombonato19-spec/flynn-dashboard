@@ -1502,24 +1502,24 @@ def main():
                 "Ext. Externalities", "Ext. Kum. Externalities"]
             cat_cols_avail = [c for c in cat_cols if c in df.columns]
             breakdown = df[cat_cols_avail].copy()
-            nice_names = {"Jahr": "Jahr", "Phase": "Phase", "Revenue": "Revenue",
-                          "Ext. Externalities": "SUMME",
-                          "Ext. Kum. Externalities": "Kumuliert"}
+            nice_names = {"Jahr": t("col_year"), "Phase": t("col_phase"), "Revenue": t("col_revenue"),
+                          "Ext. Externalities": t("col_sum"),
+                          "Ext. Kum. Externalities": t("col_cumulated")}
             for cn in EXT_CAT_NAMES:
                 nice_names[f"Ext. {cn}"] = f"{EXT_CATEGORIES[cn]['icon']} {cn}"
             breakdown.rename(columns=nice_names, inplace=True)
             for c in breakdown.columns:
-                if c not in ("Jahr", "Phase"):
+                if c not in (t("col_year"), t("col_phase")):
                     breakdown[c] = breakdown[c].apply(lambda v: f"${_sf(v)/1e9:,.2f}B")
             st.dataframe(breakdown, width="stretch", hide_index=True)
 
         with st.expander(t('cum_gap_title', start=retro_start), expanded=False):
             schere_df = df[["Jahr", "Phase", "Ext. Kum. Externalities",
                               "Flynn Kum. Wertschoepfung", "Kum. Schere (abs)"]].copy()
-            schere_df.columns = ["Jahr", "Phase", "Kum. Schuld (Extraktiv)",
-                                 "Kum. Aufbau (Flynn)", "Schere"]
+            schere_df.columns = [t("col_year"), t("col_phase"), t("col_cum_debt_ext"),
+                                 t("col_cum_building_flynn"), t("col_gap")]
             for c in schere_df.columns:
-                if c not in ("Jahr", "Phase"):
+                if c not in (t("col_year"), t("col_phase")):
                     schere_df[c] = schere_df[c].apply(lambda v: f"${_sf(v)/1e9:,.2f}B")
             st.dataframe(schere_df, width="stretch", hide_index=True)
 
@@ -1548,7 +1548,7 @@ def main():
         c1, c2, c3 = st.columns(3)
         for cw, nm in [(c1, "EHI"), (c2, "HRI"), (c3, "IRI")]:
             with cw:
-                st.metric(f"{nm} Extraktiv", f'{final[f"Ext. {nm}"]:.3f}',
+                st.metric(f"{nm} {t('label_extractive')}", f'{final[f"Ext. {nm}"]:.3f}',
                           f'{((final[f"Ext. {nm}"] / max(0.01, {"EHI": ehi_0, "HRI": hri_0, "IRI": iri_0}[nm])) - 1)*100:+,.0f}%')
                 st.metric(f"{nm} Flynn", f'{final[f"Flynn {nm}"]:.3f}',
                           f'{((final[f"Flynn {nm}"] / max(0.01, {"EHI": ehi_0, "HRI": hri_0, "IRI": iri_0}[nm])) - 1)*100:+,.0f}%')
@@ -1569,47 +1569,30 @@ def main():
     # ── Mathematical Reference ──
     st.markdown("---")
     with st.expander(t("math_ref_title"), expanded=False):
-        st.markdown(r"""
-**50/50-Allokation:** $Q = 0.5 \cdot S$ wobei $S$ = kombinierter Nettogewinn aller 5 Asset Manager.
-
-**Dialyse-Mechanismus:** $DR = DR_0 \cdot (1 - \beta \cdot \max(EHI, HRI)) \cdot IRI$
-
-**Matrix ROI:** $\alpha = 1 + \gamma \cdot \frac{DR}{DR_0}$
-
-**Matrix-Metamorphose:** $MQ = \alpha \cdot Q$
-
-**Wellness-Monetarisierung:** $MW_{total} = MW_B + MW_H$, $MW_B = Q_B \cdot EHI \cdot 2.5$, $MW_H = Q_H \cdot HRI \cdot 2.5$
-
-**Extraktive Externalitaeten (8 Kategorien, Revenue-basiert):**
-
-| Kategorie | Formel | Index |
-|-----------|--------|-------|
-| Klima & CO₂ | $0.12 \cdot Rev \cdot (1-EHI)$ | EHI |
-| Biodiversitaetsverlust | $0.06 \cdot Rev \cdot (1-EHI)$ | EHI |
-| Wasser & Boden | $0.04 \cdot Rev \cdot (1-EHI)$ | EHI |
-| Gesundheitsschaeden | $0.06 \cdot Rev \cdot (1-HRI)$ | HRI |
-| Soziale Ungleichheit | $0.08 \cdot Rev \cdot (1-HRI)$ | HRI |
-| Arbeitnehmerausbeutung | $0.04 \cdot Rev \cdot (1-HRI)$ | HRI |
-| Systemisches Risiko | $0.07 \cdot Rev \cdot (1-IRI)$ | IRI |
-| Regulat. Erfassung | $0.03 \cdot Rev \cdot (1-IRI)$ | IRI |
-
-$$C_{ext} = \sum_{k=1}^{8} r_k \cdot Rev \cdot (1 - I_k)$$
-
-Bei voller Degradation ($I=0$): $C_{ext} = 0.50 \cdot Rev$ — die Haelfte des gesamten Umsatzes!
-
-**Kumulierte Wertvernichtung (NIE abgebaut):**
-$$\Sigma_{ext} = \sum_{t=1}^{T} C_{ext,t}$$
-Die Externalitaeten werden nicht "bezahlt" — sie akkumulieren als unsichtbare Schuld am System.
-
-**Flynn Matrix Value:** $V_{Flynn} = S_{retained} + MQ + MW_{total}$
-
-**Kumulierte Flynn-Wertschoepfung:**
-$$\Sigma_{Flynn} = \sum_{t=1}^{T} [(MQ_t - Q_t) + MW_{total,t}]$$
-
-**Systemschere:** $\Delta_{kum} = \Sigma_{ext} + \Sigma_{Flynn}$
-
-**Extraktiver Wahrer Wert:** $V_{ext} = S - C_{ext}$
-        """)
+        st.markdown(t("math_alloc"))
+        st.markdown(t("math_dialysis"))
+        st.markdown(t("math_roi"))
+        st.markdown(t("math_metamorphose"))
+        st.markdown(t("math_wellness"))
+        st.markdown(t("math_ext_title"))
+        st.markdown(
+            t("math_cat_header") + "\n|---|---|---|\n"
+            f"| {t('math_cat_climate')} | $0.12 \\cdot Rev \\cdot (1-EHI)$ | EHI |\n"
+            f"| {t('math_cat_biodiv')} | $0.06 \\cdot Rev \\cdot (1-EHI)$ | EHI |\n"
+            f"| {t('math_cat_water')} | $0.04 \\cdot Rev \\cdot (1-EHI)$ | EHI |\n"
+            f"| {t('math_cat_health')} | $0.06 \\cdot Rev \\cdot (1-HRI)$ | HRI |\n"
+            f"| {t('math_cat_inequality')} | $0.08 \\cdot Rev \\cdot (1-HRI)$ | HRI |\n"
+            f"| {t('math_cat_exploitation')} | $0.04 \\cdot Rev \\cdot (1-HRI)$ | HRI |\n"
+            f"| {t('math_cat_systemic')} | $0.07 \\cdot Rev \\cdot (1-IRI)$ | IRI |\n"
+            f"| {t('math_cat_regulatory')} | $0.03 \\cdot Rev \\cdot (1-IRI)$ | IRI |\n"
+        )
+        st.markdown(r"$$C_{ext} = \sum_{k=1}^{8} r_k \cdot Rev \cdot (1 - I_k)$$")
+        st.markdown(t("math_ext_formula"))
+        st.markdown(t("math_cum_destruction"))
+        st.markdown(t("math_flynn_value"))
+        st.markdown(t("math_cum_flynn"))
+        st.markdown(t("math_gap"))
+        st.markdown(t("math_ext_true"))
 
     st.markdown(
         "<p style='text-align:center; color:#3a5577; font-size:0.75rem; margin-top:40px;'>"

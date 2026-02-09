@@ -152,21 +152,21 @@ st.markdown("""
 #  Die 5 groessten boersennotierten Asset Manager nach AUM
 # ═══════════════════════════════════════════════════════════════════════════════
 
-TICKERS = ["BLK", "STT", "IVZ", "BEN", "TROW"]
+TICKERS = ["BLK", "STT", "JPM", "GS", "MS"]
 NAMES = {
     "BLK":  "BlackRock Inc.",
     "STT":  "State Street Corp.",
-    "IVZ":  "Invesco Ltd.",
-    "BEN":  "Franklin Templeton",
-    "TROW": "T. Rowe Price",
+    "JPM":  "JPMorgan Chase & Co.",
+    "GS":   "Goldman Sachs Group",
+    "MS":   "Morgan Stanley",
 }
 # One colour per ticker (consistent across all charts)
 TICKER_COLORS = {
     "BLK":  "#6ea8fe",   # blue
     "STT":  "#fbbf24",   # gold
-    "IVZ":  "#c084fc",   # purple
-    "BEN":  "#f472b6",   # pink
-    "TROW": "#34d399",   # teal
+    "JPM":  "#c084fc",   # purple
+    "GS":   "#f472b6",   # pink
+    "MS":   "#34d399",   # teal
 }
 
 # ══════════════════════════════════════════════════════════════════
@@ -211,20 +211,22 @@ def _tcat(key: str) -> str:
 #  Source: Industry AUM & Revenue data (World Bank, McKinsey, annual reports)
 # ═══════════════════════════════════════════════════════════════════════════════
 _RETRO_COMBINED_REVENUE = {
-    # ── Mid-90s: asset management industry was ~$20T AUM globally ──
-    1996: 18.0e9, 1997: 20.5e9, 1998: 22.0e9, 1999: 26.0e9, 2000: 28.0e9,
+    # ── Big 5 = BLK + STT + JPM-AM + GS-AM + MS-WM combined revenue estimates ──
+    # Sources: Annual reports, McKinsey Global AM surveys, industry AUM data
+    # JPM/GS/MS: only asset & wealth management division revenue (not full bank)
+    1996: 28.0e9, 1997: 32.0e9, 1998: 34.0e9, 1999: 40.0e9, 2000: 44.0e9,
     # ── Dot-com bust, then recovery ──
-    2001: 24.0e9, 2002: 22.0e9, 2003: 25.0e9, 2004: 29.0e9, 2005: 33.0e9,
+    2001: 38.0e9, 2002: 35.0e9, 2003: 40.0e9, 2004: 46.0e9, 2005: 52.0e9,
     # ── Boom before GFC ──
-    2006: 38.0e9, 2007: 42.0e9,
+    2006: 60.0e9, 2007: 67.0e9,
     # ── Global Financial Crisis — the system's cancer exposed ──
-    2008: 30.0e9, 2009: 32.0e9,
+    2008: 48.0e9, 2009: 50.0e9,
     # ── QE-fueled recovery: AUM exploded ──
-    2010: 37.0e9, 2011: 39.0e9, 2012: 42.0e9, 2013: 47.0e9, 2014: 50.0e9,
+    2010: 58.0e9, 2011: 61.0e9, 2012: 66.0e9, 2013: 74.0e9, 2014: 79.0e9,
     # ── Bull market: asset managers print money ──
-    2015: 52.0e9, 2016: 53.0e9, 2017: 57.0e9, 2018: 55.0e9,
+    2015: 82.0e9, 2016: 84.0e9, 2017: 92.0e9, 2018: 88.0e9,
     # ── Pre-COVID peak + COVID ──
-    2019: 60.0e9, 2020: 58.0e9,
+    2019: 97.0e9, 2020: 94.0e9,
 }
 RETRO_START = min(_RETRO_COMBINED_REVENUE.keys())  # 1996
 
@@ -291,9 +293,9 @@ def fetch_annual_history() -> pd.DataFrame:
 _fb = {
     "BLK":  {2021: (727, 5.90e9, 19.37e9), 2022: (565, 5.18e9, 17.87e9), 2023: (736, 5.50e9, 17.86e9), 2024: (1049, 6.37e9, 20.41e9), 2025: (1056, 6.80e9, 21.50e9)},
     "STT":  {2021: (93, 2.07e9, 11.96e9),  2022: (78, 2.77e9, 12.35e9),  2023: (77, 1.95e9, 11.95e9),  2024: (98, 2.18e9, 12.63e9),  2025: (132, 2.35e9, 13.10e9)},
-    "IVZ":  {2021: (24, 1.39e9, 6.89e9),   2022: (18, 0.54e9, 6.05e9),   2023: (17, 0.52e9, 5.73e9),   2024: (18, 0.58e9, 6.02e9),   2025: (19, 0.62e9, 6.20e9)},
-    "BEN":  {2021: (32, 1.83e9, 8.43e9),   2022: (25, 1.30e9, 8.28e9),   2023: (25, 0.87e9, 7.85e9),   2024: (22, 0.95e9, 8.10e9),   2025: (21, 1.00e9, 8.30e9)},
-    "TROW": {2021: (198, 3.08e9, 7.67e9),  2022: (110, 1.55e9, 6.49e9),  2023: (109, 1.65e9, 6.46e9),  2024: (118, 1.90e9, 7.08e9),  2025: (115, 2.00e9, 7.30e9)},
+    "JPM":  {2021: (158, 48.33e9, 127.20e9), 2022: (134, 37.68e9, 128.70e9), 2023: (170, 49.55e9, 158.10e9), 2024: (242, 58.47e9, 173.00e9), 2025: (260, 60.00e9, 180.00e9)},
+    "GS":   {2021: (382, 21.64e9, 59.34e9),  2022: (343, 11.26e9, 47.37e9),  2023: (384, 8.52e9, 46.25e9),  2024: (583, 14.28e9, 53.50e9),  2025: (600, 15.50e9, 56.00e9)},
+    "MS":   {2021: (98, 15.03e9, 59.76e9),  2022: (85, 11.03e9, 53.67e9),  2023: (85, 9.09e9, 54.14e9),  2024: (125, 13.40e9, 61.80e9),  2025: (130, 14.00e9, 64.00e9)},
 }
 FALLBACK_DATA: dict[int, dict] = {}
 for _tick, _years in _fb.items():

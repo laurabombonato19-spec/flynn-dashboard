@@ -57,6 +57,14 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
+# Load shared client-side lookup module from canonical assets so the dashboard
+# automatically supports Deep‑Lookup injection when hosted. This inserts a
+# <script src="..."> into the Streamlit DOM (graceful fallback if blocked).
+try:
+    st.markdown('<script src="https://societal.business/assets/js/sb-lookup.js"></script>', unsafe_allow_html=True)
+except Exception:
+    pass
+
 # ─── Custom CSS (dark pro look) ─────────────────────────────────────────────
 st.markdown("""
 <style>
